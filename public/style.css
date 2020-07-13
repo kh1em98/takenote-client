@@ -1,0 +1,136 @@
+.navbar-own {
+  background: #333333;
+}
+
+.navbar-own .icon {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+}
+
+.navbar-own .icon i {
+  display: block;
+  padding: 14px;
+  background: #2b2b2b;
+  color: #d0d0d0;
+  font-weight: 600;
+}
+
+.navbar-own .icon i:hover {
+  cursor: pointer;
+  background: #5183f5;
+  color: #f8f9fa !important;
+}
+
+.navbar-own .item {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.navbar-own .item i {
+  width: 12px;
+  display: block;
+}
+
+.navbar-own .item p {
+  margin-bottom: 0;
+}
+
+.navbar-own .item:hover {
+  cursor: pointer;
+  background: #262626;
+}
+
+.navbar-own .item:hover p {
+  color: #f8f9fa !important;
+}
+
+.navbar-own .item:hover i {
+  color: #5183f5 !important;
+}
+
+.navbar-own .item:focus {
+  cursor: pointer;
+  background: #262626;
+}
+
+.navbar-own .item:focus p {
+  color: #f8f9fa !important;
+}
+
+.navbar-own .item:focus i {
+  color: #5183f5 !important;
+}
+
+.navbar-own .item:active {
+  cursor: pointer;
+  background: #262626;
+}
+
+.navbar-own .item:active p {
+  color: #f8f9fa !important;
+}
+
+.navbar-own .item:active i {
+  color: #5183f5 !important;
+}
+
+.list-notes {
+  background: #e5e5e5;
+}
+
+.list-notes .note-search-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.list-notes .note-search-container input {
+  border: 1px solid #e0e0e0;
+}
+
+.list-notes .note-search-container input:focus {
+  border: 1px solid #bdbdbd;
+  outline: #8aadff solid 3px;
+}
+
+.list-notes .note-search-container input:focus .erase-input {
+  color: #8aadff !important;
+}
+
+.list-notes .note-search-container ::-webkit-input-placeholder {
+  color: #757575;
+}
+
+.list-notes .note-search-container :-ms-input-placeholder {
+  color: #757575;
+}
+
+.list-notes .note-search-container ::-ms-input-placeholder {
+  color: #757575;
+}
+
+.list-notes .note-search-container ::placeholder {
+  color: #757575;
+}
+
+.list-notes .note-search-container .erase-input {
+  display: none;
+  cursor: pointer;
+  position: relative;
+  right: 40px;
+  color: #7aa2ff !important;
+}
+/*# sourceMappingURL=style.css.map */

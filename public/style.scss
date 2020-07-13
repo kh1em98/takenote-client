@@ -1,0 +1,110 @@
+.navbar-own {
+    background: #333333;
+
+    .icon {
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+    }
+
+    .icon i {
+        display: block;
+        padding: 14px;
+        background: #2b2b2b;
+        color: #d0d0d0;
+        font-weight: 600;
+
+        &:hover {
+            cursor: pointer;
+            background: #5183f5;
+            color: #f8f9fa !important;
+        }
+    }
+
+    .item {
+        display: flex;
+        align-items: center;
+
+        i {
+            width: 12px;
+            display: block;
+        }
+
+        p {
+            margin-bottom: 0;
+        }
+
+        &:hover {
+            cursor: pointer;
+            background: #262626;
+
+            p {
+                color: #f8f9fa !important;
+            }
+
+            i {
+                color: #5183f5 !important;
+            }
+        }
+
+        &:focus {
+            cursor: pointer;
+            background: #262626;
+
+            p {
+                color: #f8f9fa !important;
+            }
+
+            i {
+                color: #5183f5 !important;
+            }
+        }
+
+        &:active {
+            cursor: pointer;
+            background: #262626;
+
+            p {
+                color: #f8f9fa !important;
+            }
+
+            i {
+                color: #5183f5 !important;
+            }
+        }
+    }
+}
+
+.list-notes {
+    background: #e5e5e5;
+
+    .note-search-container {
+        display: flex;
+        align-items: center;
+
+        input {
+            border: 1px solid #e0e0e0;
+
+            &:focus {
+                border: 1px solid #bdbdbd;
+                outline: #8aadff solid 3px;
+
+                .erase-input {
+                    color: #8aadff !important;
+                }
+            }
+        }
+
+        ::placeholder {
+            color: #757575;
+        }
+
+        .erase-input {
+            display: none;
+            cursor: pointer;
+            position: relative;
+            right: 40px;
+            color: #7aa2ff !important;
+        }
+    }
+}
