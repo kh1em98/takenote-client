@@ -80,7 +80,7 @@ const actions = {
 
         notesMatch = notesMatch.filter((item) => {
             let contentRemoveTag = getContentFromHtml(item.content);
-            if (contentRemoveTag.includes(payload.textSearch) || item.title.includes(payload.textSearch)) {
+            if (contentRemoveTag.includes(payload.searchValue) || item.title.includes(payload.searchValue)) {
                 console.log(`Content : ${contentRemoveTag}`);
                 console.log(`Title : ${item.title}`);
                 return true;

@@ -8,7 +8,7 @@
           class="gray-9 pl-3 pr-5 pb-3 pt-3 fontsize-3"
           placeholder="Search for notes"
           @keyup="turnOnSearchMode"
-          v-model="textSearch"
+          v-model="searchValue"
         />
 
         <i class="fas fa-eraser gray-5 erase-input pt-3 pb-3 pr-3 pl-2" @click="turnOffSearchMode"></i>
@@ -56,7 +56,7 @@ export default {
   name: "ListNotes",
   data() {
     return {
-      textSearch: "",
+      searchValue: "",
       activeNoteId: null,
       dropdownOpenId: null,
       onSearchMode: false
@@ -84,8 +84,9 @@ export default {
     turnOffSearchMode() {
       let noteSearchInput = document.getElementById("note-search");
       noteSearchInput.focus();
-      this.textSearch = "";
+      this.searchValue = "";
       this.onSearchMode = false;
+      this.activeNoteId = null;
     },
     activeNote(id) {
       if (id !== this.activeNoteId) {
@@ -97,11 +98,18 @@ export default {
       this.dropdownOpenid = id;
     },
     turnOnSearchMode() {
-      const eraseInputIcon = document.querySelector(".erase-input");
-      eraseInputIcon.style.display = "block";
-      this.onSearchMode = true;
-      this.activeNoteId = null;
-      this.$store.dispatch("searching", { textSearch: this.textSearch });
+      if (this.searchValue !== "") {
+        const eraseInputIcon = document.querySelector(".erase-input");
+        eraseInputIcon.style.display = "block";
+        this.onSearchMode = true;
+        this.activeNoteId = null;
+        this.$store.dispatch("searching", { searchValue: this.searchValue });
+      } else {
+        const eraseInputIcon = document.querySelector(".erase-input");
+        eraseInputIcon.style.display = "none";
+        this.onSearchMode = false;
+        this.activeNoteId = null;
+      }
     }
   },
   mounted() {
