@@ -1,23 +1,37 @@
 <template>
   <div class="dropdown-options">
     <div class="option-item gray-7 pt-2 pl-3 pr-3 pb-2">
-      <i class="far fa-star mr-4"></i>
+      <i class="far fa-star mr-4 gray-7"></i>
       <span>Favorite</span>
     </div>
-    <div class="option-item gray-7 pt-2 pl-3 pr-3 pb-2">
-      <i class="far fa-trash-alt mr-4"></i>
+    <div class="option-item gray-7 pt-2 pl-3 pr-3 pb-2" @click="deleteNote(id)">
+      <i class="far fa-trash-alt mr-4 gray-7"></i>
       <span>Delete</span>
     </div>
     <div class="option-item gray-7 pt-2 pl-3 pr-3 pb-2">
-      <i class="fas fa-download mr-4"></i>
+      <i class="fas fa-download mr-4 gray-7"></i>
       <span>Download</span>
     </div>
   </div>
 </template>
 
 <script>
+import EventBus from "../EventBus";
+
 export default {
-  name: "DropdownOptions"
+  name: "DropdownOptions",
+  props: ["id"],
+  methods: {
+    async deleteNote(id) {
+      if (id.substr(0, 4) !== "temp") {
+        await this.$store.dispatch("deleteNote", id);
+        EventBus.$emit("resetIndex");
+      } else {
+        await this.$store.dispatch("deleteNoteTemp", id);
+        EventBus.$emit("resetIndex");
+      }
+    }
+  }
 };
 </script>
 

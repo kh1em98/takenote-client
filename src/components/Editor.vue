@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="editor">
     <label for="title">Title</label>
     <input
       type="text"
@@ -24,7 +24,7 @@
 
 <script>
 export default {
-  name: "AddNote",
+  name: "Editor",
   data() {
     return {
       title: "",
@@ -61,5 +61,8 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
+.editor {
+  background: #f5f5f5;
+}
 </style>

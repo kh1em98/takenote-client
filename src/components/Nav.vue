@@ -1,41 +1,61 @@
 <template>
   <div class="navbar-own pt-3">
     <div class="icon fontsize-2">
-      <i class="fas fa-plus gray-5"></i>
+      <i class="fas fa-plus gray-5" @click="addNoteTemp"></i>
       <i class="fas fa-sync-alt gray-5"></i>
       <i class="fas fa-cog gray-5"></i>
     </div>
 
     <div class="menu mt-3 fontsize-2">
-      <div class="item pl-1">
-        <i class="fas fa-book gray-5 mr-3 ml-3 pt-3 pb-3"></i>
-        <p class="gray-5">All Notes</p>
-      </div>
-
-      <div class="item pl-1">
-        <i class="fas fa-trash-alt gray-5 mr-3 ml-3 pt-3 pb-3"></i>
-        <p class="gray-5">Trash</p>
-      </div>
-      <div class="item pl-1">
-        <i class="fas fa-heart gray-5 mr-3 ml-3 pt-3 pb-3"></i>
-        <p class="gray-5">Favorite</p>
-      </div>
-
-      <div class="item pl-1">
-        <i class="fas fa-meh gray-5 mr-3 ml-3 pt-3 pb-3"></i>
-        <p class="gray-5">About Me</p>
-      </div>
-      <div class="item pl-1">
-        <i class="fas fa-briefcase gray-5 mr-3 ml-3 pt-3 pb-3"></i>
-        <p class="gray-5">About Project</p>
-      </div>
+      <NavItem
+        v-for="(item, index) in navTitles"
+        :key="index"
+        :title="navTitles[index]"
+        :icon="navIcons[index]"
+        :index="index+1"
+        :isActiveItem="index+1 === menuActiveIndex ? true : false"
+        @activeItemMenu="activeItemMenu"
+      />
     </div>
   </div>
 </template>
 
 <script>
+import EventBus from "../EventBus";
+import NavItem from "./NavItem";
 export default {
-  name: "Nav"
+  name: "Nav",
+  data() {
+    return {
+      menuActiveIndex: 1,
+      navTitles: [
+        "All Notes",
+        "Trash",
+        "Favorite",
+        "About Me",
+        "About Project"
+      ],
+      navIcons: [
+        "fa-book",
+        "fa-trash-alt",
+        "fa-heart",
+        "fa-meh",
+        "fa-briefcase"
+      ]
+    };
+  },
+  components: {
+    NavItem
+  },
+  methods: {
+    activeItemMenu(index) {
+      this.menuActiveIndex = index;
+    },
+    async addNoteTemp() {
+      await this.$store.dispatch("AddNoteTemp");
+      EventBus.$emit("activeNewNote");
+    }
+  }
 };
 </script>
 

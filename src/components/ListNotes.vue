@@ -1,53 +1,72 @@
 <template>
-  <div class="list-notes">
-    <div class="note-search-container mt-3 ml-3">
-      <input
-        id="note-search"
-        type="text"
-        class="gray-9 pl-3 pr-5 pb-3 pt-3 fontsize-3"
-        placeholder="Search for notes"
-        @keyup="eraseIconAppear"
-        v-model="search"
-      />
+  <div class="right-section">
+    <div class="list-notes">
+      <div class="note-search-container mt-3 ml-3">
+        <input
+          id="note-search"
+          type="text"
+          class="gray-9 pl-3 pr-5 pb-3 pt-3 fontsize-3"
+          placeholder="Search for notes"
+          @keyup="eraseIconAppear"
+          v-model="search"
+        />
 
-      <i class="fas fa-eraser gray-5 erase-input pt-3 pb-3 pr-3 pl-2" @click="eraseSearchInput"></i>
-    </div>
+        <i class="fas fa-eraser gray-5 erase-input pt-3 pb-3 pr-3 pl-2" @click="eraseSearchInput"></i>
+      </div>
 
-    <div class="mt-3 list">
-      <Note
-        v-for="(note,index) in noteItems"
-        :key="note.id"
-        :index="index + 1"
-        :note="note"
-        :isOpenDropdown="index + 1 === dropdownOpenIndex ? true : false "
-        @activeNote="activeNote"
-        :class="{'active' : index + 1===activeNoteIndex}"
-        @openDropDown="showDropDown"
-      />
+      <div class="mt-3 list">
+        <NoteItem
+          v-for="(note,index) in noteItems"
+          :key="note._id"
+          :index="index + 1"
+          :note="note"
+          :isOpenDropdown="index + 1 === dropdownOpenIndex ? true : false"
+          @activeNote="activeNote"
+          @openDropDown="openDropdown"
+          :isActive="index + 1 === activeNoteIndex"
+        />
+      </div>
     </div>
+    <Editor v-if="activeNoteIndex !== null" :note="activeNoteEditor" />
+    <NullEditor v-if="activeNoteIndex === null" />
   </div>
 </template>
 
 <script>
-import Note from "./Note";
+import EventBus from "../EventBus";
+import NoteItem from "./Note";
 import { mapGetters } from "vuex";
+import Editor from "./EditorContent";
+import NullEditor from "./NullEditor";
 export default {
   name: "ListNotes",
   data() {
     return {
       search: "",
-      activeNoteIndex: 1,
-      dropdownOpenIndex: null
+      activeNoteIndex: null,
+      dropdownOpenIndex: null,
+      activeNoteEditor: null
     };
   },
   components: {
-    Note
+    NoteItem,
+    Editor,
+    NullEditor
   },
   computed: {
     ...mapGetters(["noteItems"])
   },
   created() {
     this.$store.dispatch("getNoteItems");
+    EventBus.$on("activeNewNote", () => {
+      this.activeNoteIndex = 1;
+      this.activeNoteEditor = this.noteItems[0];
+    });
+
+    EventBus.$on("resetIndex", () => {
+      this.activeNoteIndex = null;
+      this.activeNoteEditor = null;
+    });
   },
   methods: {
     eraseIconAppear() {
@@ -65,35 +84,25 @@ export default {
     },
     activeNote(index) {
       if (index !== this.activeNoteIndex) {
-        document
-          .querySelector(`.list div:nth-child(${this.activeNoteIndex})`)
-          .classList.remove("active");
         this.activeNoteIndex = index;
+        this.activeNoteEditor = this.noteItems[index - 1];
       }
     },
-    showDropDown(index) {
-      console.log("Mo dropdown");
+    openDropdown(index) {
       this.activeNote(index);
       this.dropdownOpenIndex = index;
     }
   },
   mounted() {
+    // Khi click ra ben ngoai dropdown, thi dropdown se bien mat
     document.body.addEventListener("click", e => {
-      console.log("Da click");
       if (
         e.target.classList[0] !== "note-option" &&
         e.target.parentElement.classList[0] !== "note-option"
       ) {
-        if (
-          e.target.classList[0] !== "dropdown-options" &&
-          e.target.classList[0] !== "option-item" &&
-          e.target.parentElement.classList[0] !== "option-item"
-        ) {
-          console.log(e.target);
-          let dropdownOptions = document.querySelector(".dropdown-options");
-          if (dropdownOptions != null) {
-            this.dropdownOpenIndex = null;
-          }
+        let dropdownOptions = document.querySelector(".dropdown-options");
+        if (dropdownOptions != null) {
+          this.dropdownOpenIndex = null;
         }
       }
     });
@@ -101,5 +110,9 @@ export default {
 };
 </script>
 
-<style>
+<style lang ="scss">
+.right-section {
+  display: grid;
+  grid-template-columns: 330px auto;
+}
 </style>
