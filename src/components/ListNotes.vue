@@ -7,8 +7,8 @@
           type="text"
           class="gray-9 pl-3 pr-5 pb-3 pt-3 fontsize-3"
           placeholder="Search for notes"
-          @keyup="eraseIconAppear"
-          v-model="search"
+          @keyup="searching"
+          v-model="textSearch"
         />
 
         <i class="fas fa-eraser gray-5 erase-input pt-3 pb-3 pr-3 pl-2" @click="eraseSearchInput"></i>
@@ -42,10 +42,11 @@ export default {
   name: "ListNotes",
   data() {
     return {
-      search: "",
+      textSearch: "",
       activeNoteIndex: null,
       dropdownOpenIndex: null,
-      activeNoteEditor: null
+      activeNoteEditor: null,
+      onSearchMode: false
     };
   },
   components: {
@@ -69,18 +70,12 @@ export default {
     });
   },
   methods: {
-    eraseIconAppear() {
-      const eraseInputIcon = document.querySelector(".erase-input");
-      if (this.search !== "") {
-        eraseInputIcon.style.display = "block";
-      } else {
-        eraseInputIcon.style.display = "none";
-      }
-    },
     eraseSearchInput() {
+      console.log("Xoa search input");
       let noteSearchInput = document.getElementById("note-search");
       noteSearchInput.focus();
-      this.search = "";
+      this.textSearch = "";
+      this.onSearchMode = false;
     },
     activeNote(index) {
       if (index !== this.activeNoteIndex) {
@@ -91,6 +86,12 @@ export default {
     openDropdown(index) {
       this.activeNote(index);
       this.dropdownOpenIndex = index;
+    },
+    searching() {
+      const eraseInputIcon = document.querySelector(".erase-input");
+      eraseInputIcon.style.display = "block";
+      this.onSearchMode = true;
+      this.$store.dispatch("searching", { textSearch: this.textSearch });
     }
   },
   mounted() {

@@ -62,6 +62,10 @@ const actions = {
         }).catch(function (error) {
             console.log(`Error : ${error}`);
         })
+    },
+    searching(action, payload) {
+        console.log(action);
+        console.log(payload.textSearch);
     }
 };
 

@@ -48,7 +48,7 @@ export default {
             return note.id === id;
           });
           console.log(`Da svae note id ${id}`);
-        }, 350);
+        }, 1000);
       } else {
         let newNoteSaving = {
           id: this.note._id,
@@ -68,7 +68,7 @@ export default {
             return note.id === id;
           });
           console.log(`Da svae note id ${id}`);
-        }, 350);
+        }, 1000);
       }
     }
   }
