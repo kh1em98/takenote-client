@@ -76,13 +76,10 @@ const actions = {
     searching({
         commit
     }, payload) {
-        let notesMatch = state.noteItems;
-
+        let notesMatch = _.clone(state.noteItems);
         notesMatch = notesMatch.filter((item) => {
             let contentRemoveTag = getContentFromHtml(item.content);
             if (contentRemoveTag.includes(payload.searchValue) || item.title.includes(payload.searchValue)) {
-                console.log(`Content : ${contentRemoveTag}`);
-                console.log(`Title : ${item.title}`);
                 return true;
             } else {
                 return false;

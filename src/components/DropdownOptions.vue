@@ -24,7 +24,7 @@ export default {
   methods: {
     async deleteNote(id) {
       await this.$store.dispatch("deleteNote", id);
-      EventBus.$emit("resetActiveNoteId");
+      EventBus.$emit("reset");
     }
   }
 };

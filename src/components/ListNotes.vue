@@ -7,7 +7,7 @@
           type="text"
           class="gray-9 pl-3 pr-5 pb-3 pt-3 fontsize-3"
           placeholder="Search for notes"
-          @keyup="turnOnSearchMode"
+          @keyup="searchValueChange"
           v-model="searchValue"
         />
 
@@ -39,8 +39,13 @@
       </div>
     </div>
     <Editor
-      v-if="activeNoteId !== null"
+      v-if="activeNoteId !== null && !onSearchMode"
       :note="this.noteItems.find(item => item._id === activeNoteId)"
+    />
+
+    <Editor
+      v-if="activeNoteId !== null && onSearchMode"
+      :note="this.notesMatch.find(item => item._id === activeNoteId)"
     />
     <NullEditor v-if="activeNoteId === null" />
   </div>
@@ -76,14 +81,17 @@ export default {
       this.activeNoteId = 1;
     });
 
-    EventBus.$on("resetActiveNoteId", () => {
+    EventBus.$on("reset", () => {
+      this.searchValue = "";
       this.activeNoteId = null;
+      this.dropdownOpenId = null;
+      this.turnOffSearchMode();
     });
   },
   methods: {
     turnOffSearchMode() {
-      let noteSearchInput = document.getElementById("note-search");
-      noteSearchInput.focus();
+      const eraseInputIcon = document.querySelector(".erase-input");
+      eraseInputIcon.style.display = "none";
       this.searchValue = "";
       this.onSearchMode = false;
       this.activeNoteId = null;
@@ -95,9 +103,9 @@ export default {
     },
     openDropdown(id) {
       this.activeNote(id);
-      this.dropdownOpenid = id;
+      this.dropdownOpenId = id;
     },
-    turnOnSearchMode() {
+    searchValueChange() {
       if (this.searchValue !== "") {
         const eraseInputIcon = document.querySelector(".erase-input");
         eraseInputIcon.style.display = "block";
@@ -105,10 +113,7 @@ export default {
         this.activeNoteId = null;
         this.$store.dispatch("searching", { searchValue: this.searchValue });
       } else {
-        const eraseInputIcon = document.querySelector(".erase-input");
-        eraseInputIcon.style.display = "none";
-        this.onSearchMode = false;
-        this.activeNoteId = null;
+        this.turnOffSearchMode();
       }
     }
   },
