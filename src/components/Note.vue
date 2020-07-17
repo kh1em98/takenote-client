@@ -19,11 +19,12 @@
       <span class="note-option-dot"></span>
     </div>
 
-    <DropdownOptions v-if="isOpenDropdown" :id="note._id" />
+    <DropdownOptions v-if="isOpenDropdown" :id="note._id" @downloadNote="downloadNote" />
   </div>
 </template>
 
 <script>
+var FileSaver = require("file-saver");
 import DropdownOptions from "./DropdownOptions";
 
 export default {
@@ -35,6 +36,13 @@ export default {
     },
     openDropDown(id) {
       this.$emit("openDropDown", id);
+    },
+    downloadNote() {
+      let htmlFile = "<h1>" + this.note.title + "</h1>\n" + this.note.content;
+      var blob = new Blob([htmlFile], {
+        type: "text/html;charset=utf-8"
+      });
+      FileSaver.saveAs(blob, `${this.note.title}.html`);
     }
   },
   components: {

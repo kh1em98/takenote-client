@@ -126,7 +126,7 @@ export default {
       ) {
         let dropdownOptions = document.querySelector(".dropdown-options");
         if (dropdownOptions != null) {
-          this.activeNoteId = null;
+          this.dropdownOpenId = null;
         }
       }
     });

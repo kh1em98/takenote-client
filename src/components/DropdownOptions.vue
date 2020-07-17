@@ -8,7 +8,7 @@
       <i class="far fa-trash-alt mr-4 gray-7"></i>
       <span>Delete</span>
     </div>
-    <div class="option-item gray-7 pt-2 pl-3 pr-3 pb-2">
+    <div class="option-item gray-7 pt-2 pl-3 pr-3 pb-2" @click="downloadNote">
       <i class="fas fa-download mr-4 gray-7"></i>
       <span>Download</span>
     </div>
@@ -25,6 +25,9 @@ export default {
     async deleteNote(id) {
       await this.$store.dispatch("deleteNote", id);
       EventBus.$emit("reset");
+    },
+    downloadNote() {
+      this.$emit("downloadNote");
     }
   }
 };
