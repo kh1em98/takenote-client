@@ -7,28 +7,42 @@
           type="text"
           class="gray-9 pl-3 pr-5 pb-3 pt-3 fontsize-3"
           placeholder="Search for notes"
-          @keyup="searching"
+          @keyup="turnOnSearchMode"
           v-model="textSearch"
         />
 
-        <i class="fas fa-eraser gray-5 erase-input pt-3 pb-3 pr-3 pl-2" @click="eraseSearchInput"></i>
+        <i class="fas fa-eraser gray-5 erase-input pt-3 pb-3 pr-3 pl-2" @click="turnOffSearchMode"></i>
       </div>
 
-      <div class="mt-3 list">
+      <div class="mt-3 list" v-if="!onSearchMode">
         <NoteItem
-          v-for="(note,index) in noteItems"
+          v-for="(note) in noteItems"
           :key="note._id"
-          :index="index + 1"
           :note="note"
-          :isOpenDropdown="index + 1 === dropdownOpenIndex ? true : false"
+          :isOpenDropdown="note._id === dropdownOpenId ? true : false"
           @activeNote="activeNote"
           @openDropDown="openDropdown"
-          :isActive="index + 1 === activeNoteIndex"
+          :isActive="note._id === activeNoteId"
+        />
+      </div>
+
+      <div class="mt-3 list" v-if="onSearchMode">
+        <NoteItem
+          v-for="(note) in notesMatch"
+          :key="note._id"
+          :note="note"
+          :isOpenDropdown="note._id === dropdownOpenId ? true : false"
+          @activeNote="activeNote"
+          @openDropDown="openDropdown"
+          :isActive="note._id === activeNoteId"
         />
       </div>
     </div>
-    <Editor v-if="activeNoteIndex !== null" :note="activeNoteEditor" />
-    <NullEditor v-if="activeNoteIndex === null" />
+    <Editor
+      v-if="activeNoteId !== null"
+      :note="this.noteItems.find(item => item._id === activeNoteId)"
+    />
+    <NullEditor v-if="activeNoteId === null" />
   </div>
 </template>
 
@@ -43,9 +57,8 @@ export default {
   data() {
     return {
       textSearch: "",
-      activeNoteIndex: null,
-      dropdownOpenIndex: null,
-      activeNoteEditor: null,
+      activeNoteId: null,
+      dropdownOpenId: null,
       onSearchMode: false
     };
   },
@@ -55,42 +68,39 @@ export default {
     NullEditor
   },
   computed: {
-    ...mapGetters(["noteItems"])
+    ...mapGetters(["noteItems", "notesMatch"])
   },
   created() {
     this.$store.dispatch("getNoteItems");
     EventBus.$on("activeNewNote", () => {
-      this.activeNoteIndex = 1;
-      this.activeNoteEditor = this.noteItems[0];
+      this.activeNoteId = 1;
     });
 
-    EventBus.$on("resetIndex", () => {
-      this.activeNoteIndex = null;
-      this.activeNoteEditor = null;
+    EventBus.$on("resetActiveNoteId", () => {
+      this.activeNoteId = null;
     });
   },
   methods: {
-    eraseSearchInput() {
-      console.log("Xoa search input");
+    turnOffSearchMode() {
       let noteSearchInput = document.getElementById("note-search");
       noteSearchInput.focus();
       this.textSearch = "";
       this.onSearchMode = false;
     },
-    activeNote(index) {
-      if (index !== this.activeNoteIndex) {
-        this.activeNoteIndex = index;
-        this.activeNoteEditor = this.noteItems[index - 1];
+    activeNote(id) {
+      if (id !== this.activeNoteId) {
+        this.activeNoteId = id;
       }
     },
-    openDropdown(index) {
-      this.activeNote(index);
-      this.dropdownOpenIndex = index;
+    openDropdown(id) {
+      this.activeNote(id);
+      this.dropdownOpenid = id;
     },
-    searching() {
+    turnOnSearchMode() {
       const eraseInputIcon = document.querySelector(".erase-input");
       eraseInputIcon.style.display = "block";
       this.onSearchMode = true;
+      this.activeNoteId = null;
       this.$store.dispatch("searching", { textSearch: this.textSearch });
     }
   },
@@ -103,7 +113,7 @@ export default {
       ) {
         let dropdownOptions = document.querySelector(".dropdown-options");
         if (dropdownOptions != null) {
-          this.dropdownOpenIndex = null;
+          this.activeNoteId = null;
         }
       }
     });

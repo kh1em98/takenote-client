@@ -3,7 +3,8 @@ import _ from 'lodash';
 
 
 const state = {
-    noteItems: []
+    noteItems: [],
+    notesMatch: []
 };
 
 const mutations = {
@@ -14,8 +15,16 @@ const mutations = {
         _.remove(state.noteItems, function (noteItem) {
             return noteItem._id === payload.id;
         })
+    },
+    UPDATE_NOTES_MATCH(state, payload) {
+        state.notesMatch = payload;
     }
 };
+
+function getContentFromHtml(content) {
+    content = content.replace(/<.*?>/g, '');
+    return content;
+}
 
 const actions = {
     getNoteItems({
@@ -63,14 +72,29 @@ const actions = {
             console.log(`Error : ${error}`);
         })
     },
-    searching(action, payload) {
-        console.log(action);
-        console.log(payload.textSearch);
+
+    searching({
+        commit
+    }, payload) {
+        let notesMatch = state.noteItems;
+
+        notesMatch = notesMatch.filter((item) => {
+            let contentRemoveTag = getContentFromHtml(item.content);
+            if (contentRemoveTag.includes(payload.textSearch) || item.title.includes(payload.textSearch)) {
+                console.log(`Content : ${contentRemoveTag}`);
+                console.log(`Title : ${item.title}`);
+                return true;
+            } else {
+                return false;
+            }
+        });
+        commit('UPDATE_NOTES_MATCH', notesMatch);
     }
 };
 
 const getters = {
-    noteItems: state => state.noteItems
+    noteItems: state => state.noteItems,
+    notesMatch: state => state.notesMatch
 };
 
 const noteModule = {

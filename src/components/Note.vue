@@ -1,7 +1,7 @@
 <template>
   <div
     class="note-container pl-4 pr-4 pb-3 pt-3"
-    @click="activeNote(index)"
+    @click="activeNote(note._id)"
     :class="{'note-active' : isActive}"
   >
     <div class="note">
@@ -13,7 +13,7 @@
       </div>
     </div>
 
-    <div class="note-option pt-2 pl-2 pr-2 pb-2" @click="openDropDown(index)">
+    <div class="note-option pt-2 pl-2 pr-2 pb-2" @click="openDropDown(note._id)">
       <span class="note-option-dot"></span>
       <span class="note-option-dot"></span>
       <span class="note-option-dot"></span>
@@ -30,11 +30,11 @@ export default {
   name: "Note",
   props: ["note", "index", "isOpenDropdown", "isActive"],
   methods: {
-    activeNote(index) {
-      this.$emit("activeNote", index);
+    activeNote(id) {
+      this.$emit("activeNote", id);
     },
-    openDropDown(index) {
-      this.$emit("openDropDown", index);
+    openDropDown(id) {
+      this.$emit("openDropDown", id);
     }
   },
   components: {

@@ -23,13 +23,8 @@ export default {
   props: ["id"],
   methods: {
     async deleteNote(id) {
-      if (id.substr(0, 4) !== "temp") {
-        await this.$store.dispatch("deleteNote", id);
-        EventBus.$emit("resetIndex");
-      } else {
-        await this.$store.dispatch("deleteNoteTemp", id);
-        EventBus.$emit("resetIndex");
-      }
+      await this.$store.dispatch("deleteNote", id);
+      EventBus.$emit("resetActiveNoteId");
     }
   }
 };
