@@ -8,7 +8,6 @@
       v-model="note.title"
       autocomplete="off"
       @keyup="modifyNote"
-      @keydown="modifyNote"
     />
     <vue-editor id="concac" v-model="note.content" @text-change="modifyNote"></vue-editor>
   </div>
@@ -16,12 +15,12 @@
 
 <script>
 import { VueEditor } from "vue2-editor";
+import _ from "lodash";
 
 export default {
   data() {
     return {
-      typingTimer: null,
-      isSaving: false
+      currentNotesSaving: []
     };
   },
   props: ["note"],
@@ -30,34 +29,46 @@ export default {
   },
   methods: {
     modifyNote() {
-      if (this.note._id.substr(0, 4) !== "temp") {
-        if (this.isSaving) {
-          clearTimeout(this.typingTimer);
-          this.typingTimer = setTimeout(() => {
-            this.$store.dispatch("modifyNote", {
-              id: this.note._id,
-              title: this.note.title,
-              content: this.note.content
-            });
-            this.isSaving = false;
-          }, 2000);
-        } else {
-          this.isSaving = true;
-          this.typingTimer = setTimeout(() => {
-            this.$store.dispatch("modifyNote", {
-              id: this.note._id,
-              title: this.note.title,
-              content: this.note.content
-            });
-            this.isSaving = false;
-          }, 2000);
-        }
+      let index = _.findIndex(this.currentNotesSaving, { id: this.note._id });
+      if (index !== -1) {
+        let noteSaving = this.currentNotesSaving[index];
+        clearTimeout(noteSaving.typingTimer);
+
+        let id = this.note._id;
+        let title = this.note.title;
+        let content = this.note.content;
+
+        noteSaving.typingTimer = setTimeout(() => {
+          this.$store.dispatch("modifyNote", {
+            id,
+            title,
+            content
+          });
+          _.remove(this.currentNotesSaving, function(note) {
+            return note.id === id;
+          });
+          console.log(`Da svae note id ${id}`);
+        }, 350);
       } else {
-        this.$store.dispatch("moveNoteTempToPermanent", {
+        let newNoteSaving = {
           id: this.note._id,
-          title: this.note.title,
-          content: this.note.content
-        });
+          typingTimer: null
+        };
+        this.currentNotesSaving.push(newNoteSaving);
+        let id = this.note._id;
+        let title = this.note.title;
+        let content = this.note.content;
+        newNoteSaving.typingTimer = setTimeout(() => {
+          this.$store.dispatch("modifyNote", {
+            id,
+            title,
+            content
+          });
+          _.remove(this.currentNotesSaving, function(note) {
+            return note.id === id;
+          });
+          console.log(`Da svae note id ${id}`);
+        }, 350);
       }
     }
   }

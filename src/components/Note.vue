@@ -9,7 +9,7 @@
 
       <div>
         <i class="fas fa-book gray-5 mt-1 mr-2"></i>
-        <p class="gray-6 fontsize-1 fontweight-1">{{note.lastModified | formatDate}}</p>
+        <p class="gray-6 fontsize-1 fontweight-1">{{note.timeCreated | formatDate}}</p>
       </div>
     </div>
 

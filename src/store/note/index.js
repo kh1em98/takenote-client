@@ -1,7 +1,4 @@
 import axios from 'axios';
-import {
-    v4 as uuidv4
-} from 'uuid';
 import _ from 'lodash';
 
 
@@ -12,12 +9,6 @@ const state = {
 const mutations = {
     UPDATE_NOTE_ITEMS(state, payload) {
         state.noteItems = payload
-    },
-    ADD_NOTE_TEMP(state) {
-        state.noteItems.unshift({
-            _id: 'temp' + uuidv4(),
-            lastModified: new Date()
-        });
     },
     DELETE_NOTE_TEMP(state, payload) {
         _.remove(state.noteItems, function (noteItem) {
@@ -43,8 +34,7 @@ const actions = {
         } = payload;
         return axios.post('http://localhost:8080/notes/', {
             title,
-            content,
-            lastModified: new Date().toLocaleString()
+            content
         }).then(function (response) {
             commit('UPDATE_NOTE_ITEMS', response.data)
         }).catch(function (error) {
@@ -64,18 +54,6 @@ const actions = {
             console.log('Error : ', error);
         })
     },
-    deleteNoteTemp({
-        commit
-    }, id) {
-        commit('DELETE_NOTE_TEMP', {
-            id
-        });
-    },
-    AddNoteTemp({
-        commit
-    }) {
-        commit('ADD_NOTE_TEMP');
-    },
     modifyNote({
         commit
     }, payload) {
@@ -83,22 +61,6 @@ const actions = {
             commit('UPDATE_NOTE_ITEMS', response.data)
         }).catch(function (error) {
             console.log(`Error : ${error}`);
-        })
-    },
-    async moveNoteTempToPermanent({
-        commit
-    }, payload) {
-        await axios.delete('http://localhost:8080/notes/', {
-            id: payload.id
-        });
-        axios.post('http://localhost:8080/notes/', {
-            id: payload.id.substr(4),
-            title: payload.title,
-            content: payload.content
-        }).then(function (response) {
-            commit('UPDATE_NOTE_ITEMS', response.data)
-        }).catch(function (err) {
-            console.log(`Error : ${err}`);
         })
     }
 };

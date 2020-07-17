@@ -52,7 +52,7 @@ export default {
       this.menuActiveIndex = index;
     },
     async addNoteTemp() {
-      await this.$store.dispatch("AddNoteTemp");
+      await this.$store.dispatch("addNote", { title: "", content: "" });
       EventBus.$emit("activeNewNote");
     }
   }
