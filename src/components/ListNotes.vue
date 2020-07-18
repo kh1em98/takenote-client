@@ -9,6 +9,7 @@
           placeholder="Search for notes"
           @keyup="searchValueChange"
           v-model="searchValue"
+          autocomplete="off"
         />
 
         <i class="fas fa-eraser gray-5 erase-input pt-3 pb-3 pr-3 pl-2" @click="turnOffSearchMode"></i>
@@ -23,6 +24,7 @@
           @activeNote="activeNote"
           @openDropDown="openDropdown"
           :isActive="note._id === activeNoteId"
+          :isFavorite="note.favorite === 2"
         />
       </div>
 
@@ -35,6 +37,7 @@
           @activeNote="activeNote"
           @openDropDown="openDropdown"
           :isActive="note._id === activeNoteId"
+          :isFavorite="note.favorite === 2"
         />
       </div>
     </div>
@@ -43,11 +46,12 @@
       :note="this.noteItems.find(item => item._id === activeNoteId)"
     />
 
+    <NullEditor v-if="activeNoteId === null" />
+
     <Editor
       v-if="activeNoteId !== null && onSearchMode"
       :note="this.notesMatch.find(item => item._id === activeNoteId)"
     />
-    <NullEditor v-if="activeNoteId === null" />
   </div>
 </template>
 
@@ -55,7 +59,7 @@
 import EventBus from "../EventBus";
 import NoteItem from "./Note";
 import { mapGetters } from "vuex";
-import Editor from "./EditorContent";
+import Editor from "./Editor";
 import NullEditor from "./NullEditor";
 export default {
   name: "ListNotes",
@@ -77,18 +81,24 @@ export default {
   },
   created() {
     this.$store.dispatch("getNoteItems");
-    EventBus.$on("activeNewNote", () => {
-      this.activeNoteId = 1;
-    });
-
     EventBus.$on("reset", () => {
       this.searchValue = "";
       this.activeNoteId = null;
       this.dropdownOpenId = null;
       this.turnOffSearchMode();
     });
+    EventBus.$on("activeNewNote", id => {
+      this.activeNoteId = id;
+    });
   },
   methods: {
+    reset() {
+      this.searchValue = "";
+      this.activeNoteId = null;
+      console.log("Active note id = null");
+      this.dropdownOpenId = null;
+      this.turnOffSearchMode();
+    },
     turnOffSearchMode() {
       const eraseInputIcon = document.querySelector(".erase-input");
       eraseInputIcon.style.display = "none";

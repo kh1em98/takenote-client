@@ -1,68 +1,93 @@
 <template>
-  <div class="editor">
-    <label for="title">Title</label>
+  <div id="editor" class="gray-9">
     <input
       type="text"
-      name="title"
-      autocomplete="false"
-      id="title"
-      v-model="title"
-      @keyup.enter="submitNote"
+      id="titleInput"
+      class="pt-3 pb-3 pl-3 pr-3 fontweight-1 fontsize-3"
+      placeholder="Enter title here.."
+      v-model="note.title"
+      autocomplete="off"
+      @keyup="modifyNote"
     />
-    <label for="content">Content</label>
-    <input
-      type="text"
-      name="content"
-      autocomplete="false"
-      v-model="content"
-      @keyup.enter="submitNote"
-      id="content"
-    />
-    <button @click="submitNote">Submit</button>
+    <vue-editor id="concac" v-model="note.content" @text-change="modifyNote"></vue-editor>
   </div>
 </template>
 
 <script>
+import { VueEditor } from "vue2-editor";
+import _ from "lodash";
+
 export default {
-  name: "Editor",
   data() {
     return {
-      title: "",
-      content: ""
+      currentNotesSaving: []
     };
   },
+  props: ["note"],
+  components: {
+    VueEditor
+  },
   methods: {
-    submitNote() {
-      if (this.title === "") {
-        let titleElement = document.querySelector("#title");
-        titleElement.classList.add("gray-6");
-        this.title = "Khong duoc de trong title";
-        setTimeout(() => {
-          this.title = "";
-        }, 700);
-      } else if (this.content === "") {
-        let contentElement = document.querySelector("#content");
-        contentElement.classList.add("gray-6");
-        this.content = "Khong duoc de trong content";
-        setTimeout(() => {
-          this.content = "";
-        }, 700);
+    modifyNote() {
+      let index = _.findIndex(this.currentNotesSaving, { id: this.note._id });
+      if (index !== -1) {
+        let noteSaving = this.currentNotesSaving[index];
+        clearTimeout(noteSaving.typingTimer);
+
+        let id = this.note._id;
+        let title = this.note.title;
+        let content = this.note.content;
+
+        noteSaving.typingTimer = setTimeout(() => {
+          this.$store.dispatch("modifyNote", {
+            id,
+            title,
+            content
+          });
+          _.remove(this.currentNotesSaving, function(note) {
+            return note.id === id;
+          });
+        }, 1000);
       } else {
-        const payload = {
-          title: this.title,
-          content: this.content
+        let newNoteSaving = {
+          id: this.note._id,
+          typingTimer: null
         };
-        this.$store.dispatch("addNote", payload);
-        this.title = "";
-        this.content = "";
+        this.currentNotesSaving.push(newNoteSaving);
+        let id = this.note._id;
+        let title = this.note.title;
+        let content = this.note.content;
+        newNoteSaving.typingTimer = setTimeout(() => {
+          this.$store.dispatch("modifyNote", {
+            id,
+            title,
+            content
+          });
+          _.remove(this.currentNotesSaving, function(note) {
+            return note.id === id;
+          });
+        }, 1000);
       }
     }
   }
 };
 </script>
 
-<style lang="scss">
-.editor {
+<style scoped lang="scss">
+#editor {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 0;
+}
+
+#titleInput {
+  width: 100%;
+  border: none;
+  outline: none;
   background: #f5f5f5;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  text-align: center;
 }
 </style>

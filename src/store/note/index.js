@@ -38,10 +38,13 @@ const actions = {
         commit
     }, payload) {
         const {
+            id,
             title,
             content
         } = payload;
+
         return axios.post('http://localhost:8080/notes/', {
+            _id: id,
             title,
             content
         }).then(function (response) {
@@ -49,6 +52,8 @@ const actions = {
         }).catch(function (error) {
             console.log('Error : ', error);
         })
+
+
     },
     deleteNote({
         commit
@@ -86,6 +91,15 @@ const actions = {
             }
         });
         commit('UPDATE_NOTES_MATCH', notesMatch);
+    },
+    changeFavorite({
+        commit
+    }, payload) {
+        axios.put('http://localhost:8080/notes/', payload).then(function (response) {
+            commit('UPDATE_NOTE_ITEMS', response.data)
+        }).catch(function (error) {
+            console.log(`Error : ${error}`);
+        })
     }
 };
 

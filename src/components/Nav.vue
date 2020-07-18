@@ -1,7 +1,7 @@
 <template>
   <div class="navbar-own pt-3">
     <div class="icon fontsize-2">
-      <i class="fas fa-plus gray-5" @click="addNoteTemp"></i>
+      <i class="fas fa-plus gray-5" @click="addNote"></i>
       <i class="fas fa-sync-alt gray-5"></i>
       <i class="fas fa-cog gray-5"></i>
     </div>
@@ -21,6 +21,7 @@
 </template>
 
 <script>
+import { v4 as uuidv4 } from "uuid";
 import EventBus from "../EventBus";
 import NavItem from "./NavItem";
 export default {
@@ -51,9 +52,14 @@ export default {
     activeItemMenu(index) {
       this.menuActiveIndex = index;
     },
-    async addNoteTemp() {
-      await this.$store.dispatch("addNote", { title: "", content: "" });
-      EventBus.$emit("activeNewNote");
+    async addNote() {
+      let id = uuidv4();
+      await this.$store.dispatch("addNote", {
+        id,
+        title: "",
+        content: ""
+      });
+      EventBus.$emit("activeNewNote", id);
     }
   }
 };

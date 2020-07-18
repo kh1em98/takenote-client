@@ -1,6 +1,6 @@
 <template>
   <div class="dropdown-options">
-    <div class="option-item gray-7 pt-2 pl-3 pr-3 pb-2">
+    <div class="option-item gray-7 pt-2 pl-3 pr-3 pb-2" @click="changeFavorite">
       <i class="far fa-star mr-4 gray-7"></i>
       <span>Favorite</span>
     </div>
@@ -28,6 +28,9 @@ export default {
     },
     downloadNote() {
       this.$emit("downloadNote");
+    },
+    changeFavorite() {
+      this.$emit("changeFavorite");
     }
   }
 };

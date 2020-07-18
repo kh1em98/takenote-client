@@ -5,9 +5,12 @@
     :class="{'note-active' : isActive}"
   >
     <div class="note">
-      <p id="note-title" class="gray-9 fontweight-2 fontsize-3 mb-1">{{note.title}}</p>
+      <div class="note-header mb-1">
+        <i class="far fa-star mr-2 gray-9" v-if="isFavorite"></i>
+        <p id="note-title" class="gray-9 fontweight-2 fontsize-3 mb-1">{{note.title}}</p>
+      </div>
 
-      <div>
+      <div class="note-body">
         <i class="fas fa-book gray-5 mt-1 mr-2"></i>
         <p class="gray-6 fontsize-1 fontweight-1">{{note.timeCreated | formatDate}}</p>
       </div>
@@ -19,7 +22,12 @@
       <span class="note-option-dot"></span>
     </div>
 
-    <DropdownOptions v-if="isOpenDropdown" :id="note._id" @downloadNote="downloadNote" />
+    <DropdownOptions
+      v-if="isOpenDropdown"
+      :id="note._id"
+      @downloadNote="downloadNote"
+      @changeFavorite="changeFavorite"
+    />
   </div>
 </template>
 
@@ -29,7 +37,7 @@ import DropdownOptions from "./DropdownOptions";
 
 export default {
   name: "Note",
-  props: ["note", "index", "isOpenDropdown", "isActive"],
+  props: ["note", "isOpenDropdown", "isActive", "isFavorite"],
   methods: {
     activeNote(id) {
       this.$emit("activeNote", id);
@@ -43,7 +51,15 @@ export default {
         type: "text/html;charset=utf-8"
       });
       FileSaver.saveAs(blob, `${this.note.title}.html`);
-    }
+    },
+    async changeFavorite() {
+      let newFavoriteStatus = this.note.favorite === 1 ? 2 : 1;
+      console.log(`New favorite : ${newFavoriteStatus}`);
+      await this.$store.dispatch("changeFavorite", {
+        id: this.note._id,
+        favorite: newFavoriteStatus
+      });
+    },
   },
   components: {
     DropdownOptions
@@ -60,10 +76,19 @@ export default {
   border-top: 1px solid #ced4da;
   position: relative;
 
-  #note-title {
-    width: 100%;
-    overflow: hidden;
-    height: 25px !important;
+  .note-header {
+    display: flex;
+
+    i {
+      color: #5183f5;
+    }
+
+    #note-title {
+      padding-top: 3px;
+      width: 100%;
+      overflow: hidden;
+      height: 25px !important;
+    }
   }
 
   .note {
@@ -94,8 +119,22 @@ export default {
 
 .note-active {
   background: #5183f5;
-  p {
-    color: #f8f9fa !important;
+  .note-header {
+    i {
+      color: #f8f9fa !important;
+    }
+    p {
+      color: #f8f9fa !important;
+    }
+  }
+
+  .note-body {
+    i {
+      color: #f8f9fa !important;
+    }
+    p {
+      color: #f8f9fa !important;
+    }
   }
 
   .note-option-dot {
