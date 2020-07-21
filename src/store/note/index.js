@@ -1,6 +1,7 @@
 import axios from 'axios';
 import _ from 'lodash';
 
+const url = "notes/"
 
 const state = {
     noteItems: [],
@@ -30,7 +31,7 @@ const actions = {
     getNoteItems({
         commit
     }) {
-        return axios.get('http://localhost:8080/notes/').then((response) => {
+        return axios.get(url).then((response) => {
             commit('UPDATE_NOTE_ITEMS', response.data)
         })
     },
@@ -43,7 +44,7 @@ const actions = {
             content
         } = payload;
 
-        return axios.post('http://localhost:8080/notes/', {
+        return axios.post(url, {
             _id: id,
             title,
             content
@@ -58,7 +59,7 @@ const actions = {
     deleteNote({
         commit
     }, id) {
-        return axios.delete('http://localhost:8080/notes/', {
+        return axios.delete(url, {
             data: {
                 id
             }
@@ -71,7 +72,7 @@ const actions = {
     modifyNote({
         commit
     }, payload) {
-        axios.put('http://localhost:8080/notes/', payload).then(function (response) {
+        axios.put(url, payload).then(function (response) {
             commit('UPDATE_NOTE_ITEMS', response.data)
         }).catch(function (error) {
             console.log(`Error : ${error}`);
@@ -95,7 +96,7 @@ const actions = {
     changeFavorite({
         commit
     }, payload) {
-        axios.put('http://localhost:8080/notes/', payload).then(function (response) {
+        axios.put(url, payload).then(function (response) {
             commit('UPDATE_NOTE_ITEMS', response.data)
         }).catch(function (error) {
             console.log(`Error : ${error}`);

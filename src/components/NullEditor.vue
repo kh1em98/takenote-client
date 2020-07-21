@@ -1,7 +1,5 @@
 <template>
-  <div id="editor">
-    <h3 class="gray-6">Tao note moi bang cach nhan dau cong hoac Ctrl + N</h3>
-  </div>
+  <div id="editor"></div>
 </template>
 
 <script>

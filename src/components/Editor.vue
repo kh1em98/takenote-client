@@ -1,5 +1,5 @@
 <template>
-  <div id="editor" class="gray-9">
+  <div id="editor" class="gray-9" v-if="note">
     <input
       type="text"
       id="titleInput"

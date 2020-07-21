@@ -90,6 +90,13 @@ export default {
     EventBus.$on("activeNewNote", id => {
       this.activeNoteId = id;
     });
+    EventBus.$on("sync", () => {
+      this.searchValue = "";
+      this.activeNoteId = null;
+      this.dropdownOpenId = null;
+      this.turnOffSearchMode();
+      this.$store.dispatch("getNoteItems");
+    });
   },
   methods: {
     reset() {

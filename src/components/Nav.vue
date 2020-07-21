@@ -2,8 +2,7 @@
   <div class="navbar-own pt-3">
     <div class="icon fontsize-2">
       <i class="fas fa-plus gray-5" @click="addNote"></i>
-      <i class="fas fa-sync-alt gray-5"></i>
-      <i class="fas fa-cog gray-5"></i>
+      <i class="fas fa-sync-alt gray-5" @click="sync"></i>
     </div>
 
     <div class="menu mt-3 fontsize-2">
@@ -12,6 +11,7 @@
         :key="index"
         :title="navTitles[index]"
         :icon="navIcons[index]"
+        :link="navLink[index]"
         :index="index+1"
         :isActiveItem="index+1 === menuActiveIndex ? true : false"
         @activeItemMenu="activeItemMenu"
@@ -29,20 +29,9 @@ export default {
   data() {
     return {
       menuActiveIndex: 1,
-      navTitles: [
-        "All Notes",
-        "Trash",
-        "Favorite",
-        "About Me",
-        "About Project"
-      ],
-      navIcons: [
-        "fa-book",
-        "fa-trash-alt",
-        "fa-heart",
-        "fa-meh",
-        "fa-briefcase"
-      ]
+      navTitles: ["All Notes", "About Me", "About Project"],
+      navIcons: ["fa-book", "fa-meh", "fa-briefcase"],
+      navLink: ["/notes", "/", "/"]
     };
   },
   components: {
@@ -60,6 +49,9 @@ export default {
         content: ""
       });
       EventBus.$emit("activeNewNote", id);
+    },
+    sync() {
+      EventBus.$emit("sync");
     }
   }
 };
