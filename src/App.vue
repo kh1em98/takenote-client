@@ -19,6 +19,9 @@ export default {
 </script>
 
 <style>
+@import "./assets/styles/boiler.css";
+@import "./assets/styles/style.css";
+
 #app {
   display: grid;
   grid-template-columns: 200px auto;
