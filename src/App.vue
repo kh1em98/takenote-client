@@ -1,11 +1,20 @@
 <template>
-  <router-view></router-view>
+  <div id="app">
+    <Nav />
+    <ListNote />
+  </div>
 </template>
 
 <script>
+import ListNote from "./components/ListNotes";
+import Nav from "./components/Nav";
+
 export default {
   name: "App",
-  components: {}
+  components: {
+    Nav,
+    ListNote
+  }
 };
 </script>
 

@@ -1,6 +1,7 @@
 <template>
   <div class="right-section">
-    <div class="list-notes">
+    <Loader v-if="isLoading" />
+    <div class="list-notes" v-if="!isLoading">
       <div class="note-search-container mt-3 ml-3">
         <input
           id="note-search"
@@ -61,6 +62,7 @@ import NoteItem from "./Note";
 import { mapGetters } from "vuex";
 import Editor from "./Editor";
 import NullEditor from "./NullEditor";
+import Loader from "./Loader";
 export default {
   name: "ListNotes",
   data() {
@@ -68,19 +70,23 @@ export default {
       searchValue: "",
       activeNoteId: null,
       dropdownOpenId: null,
-      onSearchMode: false
+      onSearchMode: false,
+      isLoading: true
     };
   },
   components: {
     NoteItem,
     Editor,
-    NullEditor
+    NullEditor,
+    Loader
   },
   computed: {
     ...mapGetters(["noteItems", "notesMatch"])
   },
   created() {
-    this.$store.dispatch("getNoteItems");
+    this.$store.dispatch("getNoteItems").then(() => {
+      this.isLoading = false;
+    });
     EventBus.$on("reset", () => {
       this.searchValue = "";
       this.activeNoteId = null;

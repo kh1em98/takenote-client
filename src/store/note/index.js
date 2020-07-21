@@ -69,16 +69,6 @@ const actions = {
             console.log('Error : ', error);
         })
     },
-    modifyNote({
-        commit
-    }, payload) {
-        axios.put(url, payload).then(function (response) {
-            commit('UPDATE_NOTE_ITEMS', response.data)
-        }).catch(function (error) {
-            console.log(`Error : ${error}`);
-        })
-    },
-
     searching({
         commit
     }, payload) {

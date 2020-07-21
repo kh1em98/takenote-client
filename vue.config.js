@@ -5,6 +5,11 @@ const path = require('path');
 module.exports = {
     outputDir: path.resolve(__dirname, '../server/public'),
     devServer: {
-        proxy: 'http://localhost:8080/'
+        proxy: {
+            '/': {
+                target: 'http://localhost:8080'
+            }
+        }
     }
+
 }

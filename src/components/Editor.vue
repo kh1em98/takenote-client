@@ -10,22 +10,29 @@
       @keyup="modifyNote"
     />
     <vue-editor id="concac" v-model="note.content" @text-change="modifyNote"></vue-editor>
+    <transition name="fade">
+      <Notification v-if="showSavedNoti" />
+    </transition>
   </div>
 </template>
 
 <script>
+import axios from "axios";
 import { VueEditor } from "vue2-editor";
 import _ from "lodash";
+import Notification from "./Notification";
 
 export default {
   data() {
     return {
-      currentNotesSaving: []
+      currentNotesSaving: [],
+      showSavedNoti: false
     };
   },
   props: ["note"],
   components: {
-    VueEditor
+    VueEditor,
+    Notification
   },
   methods: {
     modifyNote() {
@@ -38,16 +45,18 @@ export default {
         let title = this.note.title;
         let content = this.note.content;
 
-        noteSaving.typingTimer = setTimeout(() => {
-          this.$store.dispatch("modifyNote", {
-            id,
-            title,
-            content
-          });
+        noteSaving.typingTimer = setTimeout(async () => {
+          await axios.put("notes/", { id, title, content });
           _.remove(this.currentNotesSaving, function(note) {
             return note.id === id;
           });
-        }, 1000);
+          if (!this.showSavedNoti) {
+            this.showSavedNoti = true;
+            setTimeout(() => {
+              this.showSavedNoti = false;
+            }, 1500);
+          }
+        }, 2300);
       } else {
         let newNoteSaving = {
           id: this.note._id,
@@ -57,16 +66,18 @@ export default {
         let id = this.note._id;
         let title = this.note.title;
         let content = this.note.content;
-        newNoteSaving.typingTimer = setTimeout(() => {
-          this.$store.dispatch("modifyNote", {
-            id,
-            title,
-            content
-          });
+        newNoteSaving.typingTimer = setTimeout(async () => {
+          await axios.put("notes/", { id, title, content });
           _.remove(this.currentNotesSaving, function(note) {
             return note.id === id;
           });
-        }, 1000);
+          if (!this.showSavedNoti) {
+            this.showSavedNoti = true;
+            setTimeout(() => {
+              this.showSavedNoti = false;
+            }, 1500);
+          }
+        }, 2300);
       }
     }
   }
@@ -89,5 +100,13 @@ export default {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
     Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   text-align: center;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
 }
 </style>
